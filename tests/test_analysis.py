@@ -79,6 +79,7 @@ def merge_data(df_romaneios, df_itens):
         'CADASTRO_ORIGEM': 'DATA_ORIGEM'
     }, inplace=True)
     df_merged.rename(columns={'CADASTRO': 'DATA_DESTINO'}, inplace=True)
+    df_merged['DATA_DESTINO'] = pd.to_datetime(df_merged['DATA_DESTINO'], errors='coerce').dt.to_period('M')
     return df_merged[['LOJA ORIGEM', 'LOJA DESTINO', 'CODIGO_X', 'CODIGO_SEQUENCIA', 'QUANTIDADE', 'DESCRICAO', 'DATA_DESTINO']]
 
 def plot_bar(df):
@@ -134,7 +135,14 @@ def plot_pie(df):
     st.pyplot(fig)
 
 def plot_heatmap_entrada(df):
-    df['MES_ANO'] = df['DATA_DESTINO'].dt.to_period('M').astype(str)
+    # Verifica se a coluna 'DATA_DESTINO' já é do tipo Period
+    if not isinstance(df['DATA_DESTINO'].iloc[0], pd.Period):
+        # Se não for, converte para DateTime e depois para Period
+        df['MES_ANO'] = pd.to_datetime(df['DATA_DESTINO']).dt.to_period('M').astype(str)
+    else:
+        # Se já for Period, apenas converte para string
+        df['MES_ANO'] = df['DATA_DESTINO'].astype(str)
+    
     df_grouped = df.groupby(['LOJA DESTINO', 'MES_ANO']).agg({'QUANTIDADE':'sum'}).reset_index()
     pivot = df_grouped.pivot(index='LOJA DESTINO', columns='MES_ANO', values='QUANTIDADE').fillna(0)
 
@@ -147,7 +155,14 @@ def plot_heatmap_entrada(df):
     st.pyplot(fig)
 
 def plot_heatmap_saida(df):
-    df['MES_ANO'] = df['DATA_DESTINO'].dt.to_period('M').astype(str)
+    # Verifica se a coluna 'DATA_DESTINO' já é do tipo Period
+    if not isinstance(df['DATA_DESTINO'].iloc[0], pd.Period):
+        # Se não for, converte para DateTime e depois para Period
+        df['MES_ANO'] = pd.to_datetime(df['DATA_DESTINO']).dt.to_period('M').astype(str)
+    else:
+        # Se já for Period, apenas converte para string
+        df['MES_ANO'] = df['DATA_DESTINO'].astype(str)
+    
     df_grouped = df.groupby(['LOJA ORIGEM', 'MES_ANO']).agg({'QUANTIDADE':'sum'}).reset_index()
     pivot = df_grouped.pivot(index='LOJA ORIGEM', columns='MES_ANO', values='QUANTIDADE').fillna(0)
 
