@@ -1,0 +1,8 @@
+.Venv/
+poetry.lock
+logs/
+components/
+src/
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
