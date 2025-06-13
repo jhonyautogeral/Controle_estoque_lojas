@@ -11,7 +11,8 @@ except OSError:
 def get_engine():
     return create_engine('mysql+pymysql://erpj-ws:erpj-ws-homologacao@localhost:3309/autogeral')
 
-def load_romaneios(engine, situacao, data_inicio, data_fim):
+def load_romaneios(engine, situacao, data_inicio, data_fim, limit=None):
+    limit_clause = f"LIMIT {limit}" if limit else ""
     query = f"""
         SELECT
             R.LOJA,
@@ -27,12 +28,14 @@ def load_romaneios(engine, situacao, data_inicio, data_fim):
             AND R.COMPRA_PEDIDO_CODIGO IS NULL
             AND R.ORIGEM_TIPO IS NULL
             AND R.CADASTRO BETWEEN '{data_inicio}' AND '{data_fim}'
+        {limit_clause}
     """
     df = pd.read_sql_query(query, engine)
     df['CADASTRO'] = pd.to_datetime(df['CADASTRO'])
     return df
 
-def load_romaneios_itens(engine, data_inicio, data_fim):
+def load_romaneios_itens(engine, data_inicio, data_fim, limit=None):
+    limit_clause = f"LIMIT {limit}" if limit else ""
     query = f"""
         SELECT
             ri.CADASTRO AS CADASTRO,
@@ -53,6 +56,7 @@ def load_romaneios_itens(engine, data_inicio, data_fim):
             ri.CODIGO_SEQUENCIA,
             ri.DESCRICAO,
             ri.ROMANEIO
+        {limit_clause}
     """
     df = pd.read_sql_query(query, engine)
     df['CADASTRO'] = pd.to_datetime(df['CADASTRO'])
