@@ -11,7 +11,7 @@ st.title("📊 Controle de Estoque ETL")
 
 
 def conectar_banco():
-    return create_engine('mysql+pymysql://erpj-ws:erpj-ws-homologacao@10.50.1.252:3306/autogeral')
+    return create_engine('mysql+pymysql://user:senha@10.50.1.252:3306/banco')
 
 # Carregar dados uma vez
 @st.cache_data
