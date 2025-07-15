@@ -9,7 +9,7 @@ st.set_page_config(page_title="ETL Controle Estoque", layout="wide")
 st.title("Consulta ETL Controle Estoque")
 
 # Conexão com banco
-DATABASE_URL = 'mysql+pymysql://erpj-ws:erpj-ws-homologacao@10.50.1.252:3306/autogeral'
+DATABASE_URL = 'mysql+pymysql://user:senha@10.50.1.252:3306/banco'
 
 # Criar colunas para os filtros
 col1, col2, col3 = st.columns(3)
